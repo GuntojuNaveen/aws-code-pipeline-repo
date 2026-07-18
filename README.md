@@ -132,7 +132,7 @@ The first step in our CI/CD journey is to set up a GitHub repository to store ou
 
 - Connect to the EC2 instance using its PEM file and public IP.
 
-  ![Pipeline Screenshot](images/build29.jpeg)
+  ![Pipeline Screenshot](images/build29.png)
 
 - Install necessary packages and the CodeDeploy agent:
   ```bash
@@ -148,7 +148,7 @@ The first step in our CI/CD journey is to set up a GitHub repository to store ou
   sudo systemctl start codedeploy-agent
   sudo systemctl status codedeploy-agent
   ```
-  ![Pipeline Screenshot](images/build30.jpeg)
+  ![Pipeline Screenshot](images/build30.png)
 
 - Create a service role for CodeDeploy.
 
