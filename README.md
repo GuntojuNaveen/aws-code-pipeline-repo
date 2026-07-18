@@ -1,117 +1,141 @@
-# aws-code-pipeline-demo
+# AWS CodePipeline Demo
 A sample Python Flask application with a complete CI/CD pipeline using AWS CodePipeline, CodeBuild, and CodeDeploy. This project demonstrates how to automate builds, manage secrets with Parameter Store, push Docker images to Docker Hub, and deploy seamlessly to AWS infrastructure.
+
+This project demonstrates how to:
+- Automate builds
+- Manage secrets with AWS Parameter Store
+- Push Docker images to Docker Hub
+- Deploy seamlessly to AWS infrastructure
+****
+## 📋 Prerequisites
+  Before you begin, ensure you have:
+- An AWS account with access to CodePipeline, CodeBuild, CodeDeploy, IAM, and EC2.
+- A GitHub account with a repository for your application.
+- DockerHub account for storing container images.
+
+## Installed tools:
+- AWS CLI
+- Git
+- Docker
 ****
 ## Set Up GitHub Repository
-The first step in our CI journey is to set up a GitHub repository to store our Python application's source code. If you already have a repository, feel free to skip this step. Otherwise, let's create a new repository on GitHub by following these steps:
+The first step in our CI/CD journey is to set up a GitHub repository to store our Python application's source code. If you already have a repository, you can skip this step. Otherwise, create a new repository on GitHub by following these steps:
 
 - Go to github.com and sign in to your account.
-- Click on the "+" button in the top-right corner and select "New repository."
-- Give your repository a name and an optional description.
-- Choose the appropriate visibility option based on your needs.
+- Click on the "+" button in the top-right corner and select New repository.
+- Provide a repository name and an optional description.
+- Choose the appropriate visibility option (public or private).
 - Initialize the repository with a README file.
-- Click on the "Create repository" button to create your new GitHub repository.
-- Great! Now that we have our repository set up, we can move on to the next step.
+- Click Create repository to finish.
+- Great! Now that the repository is set up, we can move on to the next step.
 *****
 # Code build setup
-- Create CodeBuild project → Give a name,select default project and add description.
+- Create a CodeBuild project → Provide a name, select the default project, and add a description.
   
   ![Pipeline Screenshot](images/build1.jpeg)
 
-- Choose source as github and select **Repository in my github account**  and after giving details it will ask for oauth permission, confirm that.
-- 
+- Choose GitHub as the source and select Repository in my GitHub account. After entering details, it will ask for OAuth permission — confirm it.
+   
   ![Pipeline Screenshot](images/build3.jpeg)
   
   ![Pipeline Screenshot](images/build2.jpeg)
 
-- select single build here make sure **rebuild every time when a code change is pushed to the repository** is selected.
+- Select Single build and ensure Rebuild every time a code change is pushed to the repository is enabled.
 
   ![Pipeline Screenshot](images/build4.jpeg)
 
-- In this environment section  select ondemand,managed image and compute as EC2 , running mode as ec2 instance ,  Os as linux. and select new service role.
-  Aws will create service role automatically if you already have service role then select existing service role.
+- In the environment section, select On-demand, Managed image, and compute type as EC2. Choose Linux as the OS and create a new service role (or select an existing one).
 
   ![Pipeline Screenshot](images/build5.jpeg)
 
   ![Pipeline Screenshot](images/build6.jpeg)
 
-- here write the buildspec file , if you already have builspec file present on github then select use buildspec file.
+- Provide a buildspec file. If you already have one in GitHub, select Use buildspec file.
 
   ![Pipeline Screenshot](images/build7.jpeg)
 
-- After creating codebuild project you will get the following details.
-
+- After creating the CodeBuild project, you’ll see the project details.
+  
   ![Pipeline Screenshot](images/build9.jpeg)
+****
+## Parameter Store Setup
 
-- Now Go to Aws system manager, create parameter store and Save Docker username, password, and registry URL as SecureString.
+- Go to AWS Systems Manager → Parameter Store, Save your Docker username, password, and registry URL as SecureString parameters.
 
   ![Pipeline Screenshot](images/build10.jpeg)
 
   ![Pipeline Screenshot](images/build11.jpeg)
 
-- After creating parameters
+- After creating parameters you will see like this
 
   ![Pipeline Screenshot](images/build12.jpeg)
 
-- Now to test the code build click on start build and check whether build is hapenning or not properly. here you will get error becuase we haven't given ssm permission to service role which was created in build step.
+- Start a build to test. You may get an error because the service role doesn’t have SSM permissions.
 
   ![Pipeline Screenshot](images/build13.jpeg)
+****
+## IAM Role Permissions
 
-- Now go to IAM -> Roles -> select service role -> attach Amazon SSM full access to service role
+- Go to IAM → Roles → select the service role → attach AmazonSSMFullAccess.
 
   ![Pipeline Screenshot](images/build14.jpeg)
 
   ![Pipeline Screenshot](images/build15.jpeg)
 
-- after attaching permssions to service role codebuild will be successful.
+- After attaching permissions, CodeBuild should succeed.
 
   ![Pipeline Screenshot](images/build16.jpeg)
 
-- Now after successful Codebuild Go to your configured dockerhub and check whether image was updated in your repository.
+- Verify that the Docker image is updated in your DockerHub repository.
 
   ![Pipeline Screenshot](images/build17.jpeg)
+****
+## CodePipeline Setup
 
-- Create code pipeline , select build custom pipeline
+- Create a custom pipeline.
 
    ![Pipeline Screenshot](images/build18.jpeg)
 
-- Enter pipeline name, execution mode as queued and select service role which will create automatically by AWS.
+- Enter a pipeline name, execution mode as Queued, and let AWS create the service role automatically.
 
    ![Pipeline Screenshot](images/build19.jpeg)
 
-- Now select Github via oauth app as Source provider and give repository name and branch.
+- Select GitHub (OAuth App) as the source provider, then provide the repository name and branch.
 
    ![Pipeline Screenshot](images/build20.jpeg)
 
    ![Pipeline Screenshot](images/build21.jpeg)
 
-- Select other build providers as codebuild , select project name which you already created in codebuild project , select build type as single build , region as mumbai , select input artifact as source artifact.
-
+- Choose CodeBuild as the build provider, select the project you created earlier, and configure input artifacts.
+  
    ![Pipeline Screenshot](images/build22.jpeg)
 
-- Verify all the details before click on create a pipeline.
-
+- Review all details and click Create pipeline.
+  
    ![Pipeline Screenshot](images/build23.jpeg)
 
    ![Pipeline Screenshot](images/build24.jpeg)
 
-- Now test the pipeline by changing something on the source github and create a commmit , then our pipeline will invoke the codebuild automatically.
+- Test the pipeline by committing a change to GitHub. CodePipeline should automatically trigger CodeBuild.
 
    ![Pipeline Screenshot](images/build26.jpeg)
+  ****
+  ## CodeDeploy Setup
 
-- Now the last step is to create codedeploy to deploy our application for that first create application on codedeploy by giving name of the application and choose compute platform as EC2/on-premises
+- Create a CodeDeploy application → Provide a name and choose EC2/On-premises as the compute platform.
 
   ![Pipeline Screenshot](images/build27.jpeg)
 
-- create EC2 instance and don't forget to add tagname to the instance and enable public IP also.
-
+- Launch an EC2 instance, add a tag name, and enable a public IP.
+  
   ![Pipeline Screenshot](images/build28.jpeg)
 
-- After creating EC2 instance try to login to EC2 instance using its pem file and public ip on local terminal.
+- Connect to the EC2 instance using its PEM file and public IP.
 
   ![Pipeline Screenshot](images/build29.jpeg)
 
-- Now on EC2 instance, install necessary packages and install codedeploy agent and check the status of codedeploy agent
-  ```
+- Install necessary packages and the CodeDeploy agent:
+  ```bash
   sudo apt update
   sudo apt install ruby-full
   sudo apt install wget
@@ -124,42 +148,39 @@ The first step in our CI journey is to set up a GitHub repository to store our P
   sudo systemctl start codedeploy-agent
   sudo systemctl status codedeploy-agent
   ```
-
   ![Pipeline Screenshot](images/build30.jpeg)
 
-- Create one service role for codedeploy usecase and this is useful for next step while creating a deployment group.
+- Create a service role for CodeDeploy.
 
   ![Pipeline Screenshot](images/build31.jpeg)
 
-- Create deployment group by providing name, select service role , deployment type as in-place and select target as EC2 instance now the main important is to give name of your created EC2 instance before.
+- Create a deployment group → Provide a name, select the service role, choose In-place deployment, and target the EC2 instance using its tag.
 
   ![Pipeline Screenshot](images/build32.jpeg)
 
   ![Pipeline Screenshot](images/build33.jpeg)
 
-- Now create deployment ,  select deployment group which we created earlier ,revision type as github and now here go to github and create a token.
+- Create a deployment → Select the deployment group, choose GitHub as the revision type, and generate a GitHub personal access token.
   Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).
 - Click Generate new token.
 - Give it a name (e.g., CodeDeployToken).
 - Set an expiration (e.g., 90 days or longer if needed).
 - Generate and copy the token — you’ll only see it once.
-- give github token while creating a deployment and provide repository name and latest commit id to test the deployment for now.
+- Provide the repository name and commit ID to test deployment.
 
   ![Pipeline Screenshot](images/build36.jpeg)
 
-- Now test the codedeploy it will be successful.
-
-- After creating codedeploy attach the codedeploy to the Codepipeline by click on add stage after codebuild in the pipeline.
+- Once successful, attach CodeDeploy to CodePipeline by adding a stage after CodeBuild.
 
   ![Pipeline Screenshot](images/build37.jpeg)
 
-- Give the details here , action name, action provider,region, input artifcat as buildArtifact, select application name, deployment group which we created earlier.
-
+- Configure the stage with action name, provider, region, input artifact, application name, and deployment group.
+  
   ![Pipeline Screenshot](images/build38.jpeg)
 
-- Now Go to github account and change any file and create commit then come to AWS console and check the pipeline it will be successful , if you face any errors try to troubleshoot and solve it.
+- Commit a change in GitHub and verify that the pipeline runs successfully end-to-end.
 
-- Great now we successfully created and implemented AWS CodePipeline project.
+- Congratulations! You have successfully created and implemented an AWS CodePipeline project with CodeBuild and CodeDeploy.
 
   ![Pipeline Screenshot](images/flow.png)
 
