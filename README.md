@@ -66,6 +66,87 @@ The first step in our CI journey is to set up a GitHub repository to store our P
 
   ![Pipeline Screenshot](images/build16.jpeg)
 
+- Now after successful Codebuild Go to your configured dockerhub and check whether image was updated in your repository.
+
+  ![Pipeline Screenshot](images/build17.jpeg)
+
+- Create code pipeline , select build custom pipeline
+
+   ![Pipeline Screenshot](images/build18.jpeg)
+
+- Enter pipeline name, execution mode as queued and select service role which will create automatically by AWS.
+
+   ![Pipeline Screenshot](images/build19.jpeg)
+
+- Now select Github via oauth app as Source provider and give repository name and branch.
+
+   ![Pipeline Screenshot](images/build20.jpeg)
+
+   ![Pipeline Screenshot](images/build21.jpeg)
+
+- Select other build providers as codebuild , select project name which you already created in codebuild project , select build type as single build , region as mumbai , select input artifact as source artifact.
+
+   ![Pipeline Screenshot](images/build22.jpeg)
+
+- Verify all the details before click on create a pipeline.
+
+   ![Pipeline Screenshot](images/build23.jpeg)
+
+   ![Pipeline Screenshot](images/build24.jpeg)
+
+- Now test the pipeline by changing something on the source github and create a commmit , then our pipeline will invoke the codebuild automatically.
+
+   ![Pipeline Screenshot](images/build26.jpeg)
+
+- Now the last step is to create codedeploy to deploy our application for that first create application on codedeploy by giving name of the application and choose compute platform as EC2/on-premises
+
+  ![Pipeline Screenshot](images/build27.jpeg)
+
+- create EC2 instance and don't forget to add tagname to the instance and enable public IP also.
+
+  ![Pipeline Screenshot](images/build28.jpeg)
+
+- After creating EC2 instance try to login to EC2 instance using its pem file and public ip on local terminal.
+
+  ![Pipeline Screenshot](images/build29.jpeg)
+
+- Now on EC2 instance, install necessary packages and install codedeploy agent and check the status of codedeploy agent
+  ```
+  sudo apt update
+  sudo apt install ruby-full
+  sudo apt install wget
+  cd /home/ubuntu
+  wget https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/releases/codedeploy-agent_1.8.1-26_all.deb
+  sudo dpkg -i --force-depends codedeploy-agent_1.8.1-26_all.deb
+  chmod +x ./install
+  sudo ./install auto
+  sudo systemctl enable codedeploy-agent
+  sudo systemctl start codedeploy-agent
+  sudo systemctl status codedeploy-agent
+  ```
+
+  ![Pipeline Screenshot](images/build30.jpeg)
+
+  
+
+
+  
+
+
+ 
+
+  
+
+
+
+
+
+
+  
+
+
+
+
 
   
 
