@@ -127,6 +127,49 @@ The first step in our CI journey is to set up a GitHub repository to store our P
 
   ![Pipeline Screenshot](images/build30.jpeg)
 
+- Create one service role for codedeploy usecase and this is useful for next step while creating a deployment group.
+
+  ![Pipeline Screenshot](images/build31.jpeg)
+
+- Create deployment group by providing name, select service role , deployment type as in-place and select target as EC2 instance now the main important is to give name of your created EC2 instance before.
+
+  ![Pipeline Screenshot](images/build32.jpeg)
+
+  ![Pipeline Screenshot](images/build33.jpeg)
+
+- Now create deployment ,  select deployment group which we created earlier ,revision type as github and now here go to github and create a token.
+  Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic).
+- Click Generate new token.
+- Give it a name (e.g., CodeDeployToken).
+- Set an expiration (e.g., 90 days or longer if needed).
+- Generate and copy the token — you’ll only see it once.
+- give github token while creating a deployment and provide repository name and latest commit id to test the deployment for now.
+
+  ![Pipeline Screenshot](images/build36.jpeg)
+
+- Now test the codedeploy it will be successful.
+
+- After creating codedeploy attach the codedeploy to the Codepipeline by click on add stage after codebuild in the pipeline.
+
+  ![Pipeline Screenshot](images/build37.jpeg)
+
+- Give the details here , action name, action provider,region, input artifcat as buildArtifact, select application name, deployment group which we created earlier.
+
+  ![Pipeline Screenshot](images/build38.jpeg)
+
+- Now Go to github account and change any file and create commit then come to AWS console and check the pipeline it will be successful , if you face any errors try to troubleshoot and solve it.
+
+- Great now we successfully created and implemented AWS CodePipeline project.
+
+  ![Pipeline Screenshot](images/flow.png)
+
+
+
+  
+  
+
+
+  
   
 
 
