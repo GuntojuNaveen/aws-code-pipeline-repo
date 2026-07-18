@@ -126,7 +126,7 @@ The first step in our CI/CD journey is to set up a GitHub repository to store ou
 
   ![Pipeline Screenshot](images/build27.jpeg)
 
-- Launch an EC2 instance, add a tag name, and enable a public IP.
+- Launch an EC2 instance, add a tag name, and enable a public IP and attach IAM role that ec2 should contain Codedeployfullaccess.
   
   ![Pipeline Screenshot](images/build28.jpeg)
 
